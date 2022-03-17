@@ -3,6 +3,7 @@ package edu.temple.audiobookplayer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class BookListAdapter (
@@ -12,6 +13,8 @@ class BookListAdapter (
      * ViewHolder for each book in list
      */
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val title = view.findViewById<TextView>(R.id.recyclerElementTitle)
+        val author = view.findViewById<TextView>(R.id.recyclerElementAuthor)
         lateinit var book: Book
     }
 
@@ -23,6 +26,8 @@ class BookListAdapter (
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.book = books[position]
+        holder.title.text = books[position].title
+        holder.author.text = books[position].author
     }
 
     override fun getItemCount(): Int {

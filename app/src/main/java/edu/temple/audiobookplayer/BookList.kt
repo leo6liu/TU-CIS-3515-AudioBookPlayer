@@ -1,11 +1,15 @@
 package edu.temple.audiobookplayer
 
-class BookList : Collection<Book> {
+import android.os.Parcel
+import android.os.Parcelable
+
+class BookList() : Collection<Book> {
     private val books = ArrayList<Book>()
 
     /**
-     * Collection overrides
+     * Collection implementation
      */
+
     override val size: Int
         get() = books.size
 
@@ -28,6 +32,7 @@ class BookList : Collection<Book> {
     /**
      * additional operations
      */
+
     fun add(element: Book) {
         books.add(element)
     }

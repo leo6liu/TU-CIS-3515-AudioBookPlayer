@@ -9,5 +9,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val books = BookList.generateList()
+
+        val bookListFragment = BookListFragment.newInstance(books)
+
+        supportFragmentManager.beginTransaction()
+            .add(R.id.containerBookList, bookListFragment)
+            .commit()
     }
 }
