@@ -36,7 +36,7 @@ class BookList : Collection<Book> {
         books.remove(element)
     }
 
-    fun get(index: Int): Book {
+    operator fun get(index: Int): Book {
         return books[index]
     }
 
