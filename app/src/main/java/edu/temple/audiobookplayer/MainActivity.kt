@@ -8,7 +8,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val books = BookList.generateList()
+        val books = BookList.generateBooks()
 
         val bookListFragment = BookListFragment.newInstance(books)
 

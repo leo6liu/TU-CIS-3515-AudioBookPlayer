@@ -13,8 +13,8 @@ class BookListAdapter (
      * ViewHolder for each book in list
      */
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val title = view.findViewById<TextView>(R.id.recyclerElementTitle)
-        val author = view.findViewById<TextView>(R.id.recyclerElementAuthor)
+        val title: TextView = view.findViewById<TextView>(R.id.recyclerElementTitle)
+        val author: TextView = view.findViewById<TextView>(R.id.recyclerElementAuthor)
         lateinit var book: Book
     }
 

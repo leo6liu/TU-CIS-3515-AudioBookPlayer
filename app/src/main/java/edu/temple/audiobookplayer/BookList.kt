@@ -3,53 +3,43 @@ package edu.temple.audiobookplayer
 import android.os.Parcel
 import android.os.Parcelable
 
-class BookList() : Collection<Book> {
-    private val books = ArrayList<Book>()
+data class BookList(
+    var books: ArrayList<Book> = ArrayList(),
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+        // this works
+        arrayListOf<Book>().apply {
+            parcel.readArrayList(Book::class.java.classLoader)
+        }
 
-    /**
-     * Collection implementation
-     */
+        // this works but claims the cast will never work
+//        parcel.readTypedList(ArrayList<Book>(), Book) as ArrayList<Book>
 
-    override val size: Int
-        get() = books.size
+        // this works but complains about an unchecked cast
+//        parcel.readArrayList(Book::class.java.classLoader) as ArrayList<Book>
+    )
 
-    override fun contains(element: Book): Boolean {
-        return contains(element)
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeTypedList(books)
     }
 
-    override fun containsAll(elements: Collection<Book>): Boolean {
-        return books.containsAll(elements)
+    override fun describeContents(): Int {
+        return 0
     }
 
-    override fun isEmpty(): Boolean {
-        return books.isEmpty()
-    }
+    companion object CREATOR : Parcelable.Creator<BookList> {
+        override fun createFromParcel(parcel: Parcel): BookList {
+            return BookList(parcel)
+        }
 
-    override fun iterator(): Iterator<Book> {
-        return books.iterator()
-    }
+        override fun newArray(size: Int): Array<BookList?> {
+            return arrayOfNulls(size)
+        }
 
-    /**
-     * additional operations
-     */
-
-    fun add(element: Book) {
-        books.add(element)
-    }
-
-    fun remove(element: Book) {
-        books.remove(element)
-    }
-
-    operator fun get(index: Int): Book {
-        return books[index]
-    }
-
-    companion object {
         /**
          * Generates a BookList with a hard coded set of Book objects.
          */
-        fun generateList(): BookList {
+        fun generateBooks(): BookList {
             val books = BookList()
 
             books.add(Book("Steve Jobs", "Walter Isaacson"))
@@ -73,5 +63,24 @@ class BookList() : Collection<Book> {
 
             return books
         }
+    }
+
+    /**
+     * collection-like operations
+     */
+
+    val size: Int
+        get() = books.size
+
+    fun add(element: Book) {
+        books.add(element)
+    }
+
+    fun remove(element: Book) {
+        books.remove(element)
+    }
+
+    operator fun get(index: Int): Book {
+        return books[index]
     }
 }
