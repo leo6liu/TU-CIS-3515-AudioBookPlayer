@@ -6,13 +6,14 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class BookListAdapter (
+class BookListAdapter(
     private val books: BookList,
+    private val clickEvent: (Book) -> Unit,
 ) : RecyclerView.Adapter<BookListAdapter.ViewHolder>() {
     /**
      * ViewHolder for each book in list
      */
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         val title: TextView = view.findViewById<TextView>(R.id.recyclerElementTitle)
         val author: TextView = view.findViewById<TextView>(R.id.recyclerElementAuthor)
         lateinit var book: Book
@@ -28,6 +29,7 @@ class BookListAdapter (
         holder.book = books[position]
         holder.title.text = books[position].title
         holder.author.text = books[position].author
+        holder.view.setOnClickListener { clickEvent(books[position]) }
     }
 
     override fun getItemCount(): Int {
