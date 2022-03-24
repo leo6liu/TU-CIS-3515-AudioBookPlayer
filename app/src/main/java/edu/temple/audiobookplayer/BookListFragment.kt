@@ -8,12 +8,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
+private const val ARG_PARAM_BOOK_LIST = "bookListParam"
+
 class BookListFragment() : Fragment() {
     private var bookListParam: BookList? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         arguments?.let {
             bookListParam = it.getParcelable(ARG_PARAM_BOOK_LIST)
         }
@@ -35,9 +36,7 @@ class BookListFragment() : Fragment() {
     }
 
     companion object {
-        private const val ARG_PARAM_BOOK_LIST = "bookListParam"
-
-        fun newInstance(books: BookList): BookListFragment =
+        fun newInstance(books: BookList) =
             BookListFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(ARG_PARAM_BOOK_LIST, books)
