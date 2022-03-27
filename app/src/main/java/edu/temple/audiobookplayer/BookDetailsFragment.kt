@@ -27,8 +27,13 @@ class BookDetailsFragment() : Fragment() {
         val authorView = layout.findViewById<TextView>(R.id.detailAuthor)
 
         bookViewModel.getBook().observe(requireActivity()) {
-            titleView.apply { text = it.title }
-            authorView.apply { text = it.author }
+            if (it != null) {
+                titleView.apply { text = it.title }
+                authorView.apply { text = it.author }
+            } else {
+                titleView.apply { text = "" }
+                authorView.apply { text = "" }
+            }
         }
 
         return layout
