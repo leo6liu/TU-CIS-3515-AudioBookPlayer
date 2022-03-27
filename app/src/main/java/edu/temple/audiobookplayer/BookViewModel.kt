@@ -13,6 +13,10 @@ class BookViewModel: ViewModel() {
         selectedBook.value = book
     }
 
+    fun clearBook() {
+        selectedBook.value = null
+    }
+
     fun getBook(): LiveData<Book> {
         return selectedBook
     }
