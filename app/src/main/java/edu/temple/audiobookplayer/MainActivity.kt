@@ -16,7 +16,7 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookListFragment {
         setContentView(R.layout.activity_main)
 
         bookDetailsContainer = findViewById<FragmentContainerView>(R.id.containerBookDetails)
-        bookListFragment = BookListFragment.newInstance(BookList.generateBooks())
+        bookListFragment = BookListFragment.newInstance(BookList())
         bookDetailsFragment = BookDetailsFragment()
         bookViewModel = ViewModelProvider(this).get(BookViewModel::class.java)
 
