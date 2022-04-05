@@ -11,12 +11,6 @@ data class BookList(
         arrayListOf<Book>().apply {
             parcel.readArrayList(Book::class.java.classLoader)
         }
-
-        // this works but claims the cast will never work
-//        parcel.readTypedList(ArrayList<Book>(), Book) as ArrayList<Book>
-
-        // this works but complains about an unchecked cast
-//        parcel.readArrayList(Book::class.java.classLoader) as ArrayList<Book>
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -38,7 +32,7 @@ data class BookList(
 
         /**
          * Generates a BookList with a hard coded set of Book objects.
-         */
+
         fun generateBooks(): BookList {
             val books = BookList()
 
@@ -63,6 +57,7 @@ data class BookList(
 
             return books
         }
+         */
     }
 
     /**
