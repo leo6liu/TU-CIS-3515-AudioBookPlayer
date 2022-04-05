@@ -6,16 +6,21 @@ import android.os.Parcelable
 data class Book(
     val title: String,
     val author: String,
+    val id: Int,
+    val coverURL: String,
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString().toString(),
         parcel.readString().toString(),
-    ) {
-    }
+        parcel.readInt(),
+        parcel.readString().toString(),
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(title)
         parcel.writeString(author)
+        parcel.writeInt(id)
+        parcel.writeString(coverURL)
     }
 
     override fun describeContents(): Int {
