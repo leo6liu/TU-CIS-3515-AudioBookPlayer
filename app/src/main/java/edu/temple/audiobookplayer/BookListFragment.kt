@@ -9,19 +9,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
-private const val ARG_PARAM_BOOK_LIST = "bookListParam"
-
 class BookListFragment() : Fragment() {
-    private var bookListParam: BookList? = null
     private lateinit var bookViewModel: BookViewModel
+    private lateinit var bookListViewModel: BookListViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            bookListParam = it.getParcelable(ARG_PARAM_BOOK_LIST)
-        }
 
         bookViewModel = ViewModelProvider(requireActivity()).get(BookViewModel::class.java)
+        bookListViewModel = ViewModelProvider(requireActivity()).get(BookListViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -36,23 +32,16 @@ class BookListFragment() : Fragment() {
             (requireActivity() as BookListFragment).bookSelected()
         }
 
-        layout.findViewById<RecyclerView>(R.id.bookListRecycler).apply {
-            adapter = bookListParam?.let {
-                BookListAdapter(bookListParam!!, clickEvent)
+        bookListViewModel.getList().observe(requireActivity()) {
+            layout.findViewById<RecyclerView>(R.id.bookListRecycler).apply {
+                adapter = it?.let {
+                    BookListAdapter(it, clickEvent)
+                }
+                layoutManager = LinearLayoutManager(requireContext())
             }
-            layoutManager = LinearLayoutManager(requireContext())
         }
 
         return layout
-    }
-
-    companion object {
-        fun newInstance(books: BookList) =
-            BookListFragment().apply {
-                arguments = Bundle().apply {
-                    putParcelable(ARG_PARAM_BOOK_LIST, books)
-                }
-            }
     }
 
     interface BookListFragment {

@@ -11,9 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.Dispatcher
 import org.json.JSONArray
-import org.json.JSONObject
 import java.net.URL
 
 class MainActivity : AppCompatActivity(), BookListFragment.BookListFragment {
@@ -21,6 +19,7 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookListFragment {
     private lateinit var bookListFragment: BookListFragment
     private lateinit var bookDetailsFragment: BookDetailsFragment
     private lateinit var bookViewModel: BookViewModel
+    private lateinit var bookListViewModel: BookListViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +44,7 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookListFragment {
         bookListFragment = BookListFragment.newInstance(BookList())
         bookDetailsFragment = BookDetailsFragment()
         bookViewModel = ViewModelProvider(this).get(BookViewModel::class.java)
+        bookListViewModel = ViewModelProvider(this).get(BookListViewModel::class.java)
 
         val bookSelected = bookViewModel.getBook().value != null
 
