@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class BookListAdapter(
-    private val books: BookList,
+    private var books: BookList,
     private val clickEvent: (Book) -> Unit,
 ) : RecyclerView.Adapter<BookListAdapter.ViewHolder>() {
     /**
@@ -36,4 +36,8 @@ class BookListAdapter(
         return books.size
     }
 
+    fun updateBooks(newBooks: BookList) {
+        books = newBooks
+        notifyDataSetChanged()
+    }
 }
