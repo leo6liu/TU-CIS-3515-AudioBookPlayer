@@ -32,13 +32,15 @@ class BookListFragment() : Fragment() {
             (requireActivity() as BookListFragment).bookSelected()
         }
 
+        val bookListAdapter = BookListAdapter(BookList(ArrayList<Book>(0)), clickEvent)
+
+        layout.findViewById<RecyclerView>(R.id.bookListRecycler).apply {
+            adapter = bookListAdapter
+            layoutManager = LinearLayoutManager(requireContext())
+        }
+
         bookListViewModel.getList().observe(requireActivity()) {
-            layout.findViewById<RecyclerView>(R.id.bookListRecycler).apply {
-                adapter = it?.let {
-                    BookListAdapter(it, clickEvent)
-                }
-                layoutManager = LinearLayoutManager(requireContext())
-            }
+            bookListAdapter.updateBooks(it)
         }
 
         return layout
