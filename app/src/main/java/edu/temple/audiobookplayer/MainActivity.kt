@@ -25,30 +25,23 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookListFragment {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // get query from search intent
-        if (Intent.ACTION_SEARCH == intent.action) {
-            intent.getStringExtra(SearchManager.QUERY)?.also { query ->
-                lifecycleScope.launch(Dispatchers.Main) {
-                    search(query)
-                }
-            }
-        }
-
         // trigger search dialog on button click
         val searchButton = findViewById<Button>(R.id.search)
         searchButton.setOnClickListener {
             onSearchRequested()
         }
 
+        // setup containers, fragments, and view models
         bookDetailsContainer = findViewById<FragmentContainerView>(R.id.containerBookDetails)
-        bookListFragment = BookListFragment.newInstance(BookList())
+        bookListFragment = BookListFragment()
         bookDetailsFragment = BookDetailsFragment()
         bookViewModel = ViewModelProvider(this).get(BookViewModel::class.java)
         bookListViewModel = ViewModelProvider(this).get(BookListViewModel::class.java)
 
+        // keep track if book is selected
         val bookSelected = bookViewModel.getBook().value != null
 
-        // determine which fragments should be shown
+        // determine which fragment(s) should be shown
         if (savedInstanceState == null) { // first load
             supportFragmentManager
                 .beginTransaction()
@@ -79,6 +72,20 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookListFragment {
         }
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+
+        // get query from search intent
+        if (Intent.ACTION_SEARCH == intent?.action) {
+            intent.getStringExtra(SearchManager.QUERY)?.also { query ->
+                lifecycleScope.launch(Dispatchers.Main) {
+                    search(query)
+                }
+            }
+        }
+    }
+
+    // BookListFragment method to display details of selected book
     override fun bookSelected() {
         if (bookDetailsContainer == null) { // portrait
             supportFragmentManager
@@ -109,6 +116,7 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookListFragment {
     private suspend fun search(query: String) {
         println("[ STATUS ] query received: $query")
 
+        // get books from API
         var responseArray: JSONArray
         withContext(Dispatchers.IO) {
             responseArray = JSONArray(
@@ -117,6 +125,7 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookListFragment {
         }
         println("[ STATUS ] response received: $responseArray")
 
+        // create list of books from response
         val books = BookList()
         for (i in 0 until responseArray.length()) {
             val book = responseArray.getJSONObject(i)
@@ -130,5 +139,20 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookListFragment {
             )
         }
         println("[ STATUS ] books received: $books")
+
+        // update book list
+        bookListViewModel.setList(books)
+
+        // show list fragment and clear book
+        val bookSelected = bookViewModel.getBook().value != null
+        bookViewModel.clearBook() // this line can be omitted if you don't want to clear the book on search
+        if (bookDetailsContainer == null) { // portrait
+            if (bookSelected) {
+                supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.containerBookList, bookListFragment)
+                    .commit()
+            }
+        }
     }
 }
