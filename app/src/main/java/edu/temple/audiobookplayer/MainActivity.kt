@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookListFragment {
         }
 
         // setup containers, fragments, and view models
-        bookDetailsContainer = findViewById<FragmentContainerView>(R.id.containerBookDetails)
+        bookDetailsContainer = findViewById(R.id.containerBookDetails)
         bookListFragment = BookListFragment()
         bookDetailsFragment = BookDetailsFragment()
         bookViewModel = ViewModelProvider(this).get(BookViewModel::class.java)
@@ -135,6 +135,7 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookListFragment {
                     book.getString("author"),
                     book.getInt("id"),
                     book.getString("cover_url"),
+                    book.getInt("duration"),
                 )
             )
         }

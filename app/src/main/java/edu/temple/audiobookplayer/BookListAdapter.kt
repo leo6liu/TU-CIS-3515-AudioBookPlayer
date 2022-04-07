@@ -1,5 +1,6 @@
 package edu.temple.audiobookplayer
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,6 +37,7 @@ class BookListAdapter(
         return books.size
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateBooks(newBooks: BookList) {
         books = newBooks
         notifyDataSetChanged()
