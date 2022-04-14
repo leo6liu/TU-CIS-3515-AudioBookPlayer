@@ -18,6 +18,7 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookListFragment {
     private var bookDetailsContainer: FragmentContainerView? = null
     private lateinit var bookListFragment: BookListFragment
     private lateinit var bookDetailsFragment: BookDetailsFragment
+    private lateinit var controlsFragment: ControlsFragment
     private lateinit var bookViewModel: BookViewModel
     private lateinit var bookListViewModel: BookListViewModel
 
@@ -33,6 +34,7 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookListFragment {
 
         // setup containers, fragments, and view models
         bookDetailsContainer = findViewById(R.id.containerBookDetails)
+        controlsFragment = ControlsFragment()
         bookListFragment = BookListFragment()
         bookDetailsFragment = BookDetailsFragment()
         bookViewModel = ViewModelProvider(this).get(BookViewModel::class.java)
@@ -46,6 +48,7 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookListFragment {
             supportFragmentManager
                 .beginTransaction()
                 .add(R.id.containerBookList, bookListFragment)
+                .add(R.id.containerControls, controlsFragment)
                 .commit()
         } else {
             if (bookDetailsContainer == null) { // portrait
