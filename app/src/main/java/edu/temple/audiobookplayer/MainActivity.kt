@@ -145,6 +145,7 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookListFragment,
     // BookListFragment method to display details of selected book
     override fun bookSelected(book: Book) {
         // start playing selected book
+        // UNCOMMENT TO AUTOPLAY BOOK WHENEVER A NEW ONE IS SELECTED!!!
         /*
         if (isConnected) {
             mediaControlBinder.play(book.id)
