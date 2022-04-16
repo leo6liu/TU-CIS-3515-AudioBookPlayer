@@ -146,12 +146,10 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookListFragment,
     override fun bookSelected(book: Book) {
         // start playing selected book
         // UNCOMMENT TO AUTOPLAY BOOK WHENEVER A NEW ONE IS SELECTED!!!
-        /*
-        if (isConnected) {
-            mediaControlBinder.play(book.id)
-            nowPlayingTextViewModel.setText("Now Playing: ${book.title}")
-        }
-        */
+//        if (isConnected) {
+//            mediaControlBinder.play(book.id)
+//            nowPlayingTextViewModel.setText("Now Playing: ${book.title}")
+//        }
 
         if (bookDetailsContainer == null) { // portrait
             supportFragmentManager
