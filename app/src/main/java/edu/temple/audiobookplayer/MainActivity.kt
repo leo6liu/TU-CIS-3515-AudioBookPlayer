@@ -145,10 +145,12 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookListFragment,
     // BookListFragment method to display details of selected book
     override fun bookSelected(book: Book) {
         // start playing selected book
+        /*
         if (isConnected) {
             mediaControlBinder.play(book.id)
             nowPlayingTextViewModel.setText("Now Playing: ${book.title}")
         }
+        */
 
         if (bookDetailsContainer == null) { // portrait
             supportFragmentManager
@@ -164,6 +166,9 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookListFragment,
             mediaControlBinder.pause()
             bookViewModel.getBook().value?.let { book ->
                 if (mediaControlBinder.isPlaying) {
+                    nowPlayingTextViewModel.setText("Now Playing: ${book.title}")
+                } else {
+                    mediaControlBinder.play(book.id)
                     nowPlayingTextViewModel.setText("Now Playing: ${book.title}")
                 }
             }
