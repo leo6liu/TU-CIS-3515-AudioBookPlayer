@@ -29,7 +29,7 @@ class BookListFragment() : Fragment() {
 
         val clickEvent = { book: Book ->
             bookViewModel.setBook(book)
-            (requireActivity() as BookListFragment).bookSelected()
+            (requireActivity() as BookListFragment).bookSelected(book)
         }
 
         val bookListAdapter = BookListAdapter(BookList(ArrayList<Book>(0)), clickEvent)
@@ -47,6 +47,6 @@ class BookListFragment() : Fragment() {
     }
 
     interface BookListFragment {
-        fun bookSelected()
+        fun bookSelected(book: Book)
     }
 }
