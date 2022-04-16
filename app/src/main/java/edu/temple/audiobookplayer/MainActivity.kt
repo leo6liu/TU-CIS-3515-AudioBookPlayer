@@ -20,14 +20,21 @@ import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import java.net.URL
 
-class MainActivity : AppCompatActivity(), BookListFragment.BookListFragment, BookDetailsFragment.BookDetailsFragment, ControlsFragment.ControlsFragment {
+class MainActivity : AppCompatActivity(), BookListFragment.BookListFragment,
+    BookDetailsFragment.BookDetailsFragment, ControlsFragment.ControlsFragment {
     private var bookDetailsContainer: FragmentContainerView? = null
+
+    // fragments
     private lateinit var bookListFragment: BookListFragment
     private lateinit var bookDetailsFragment: BookDetailsFragment
     private lateinit var controlsFragment: ControlsFragment
+
+    // viewmodels
     private lateinit var bookViewModel: BookViewModel
     private lateinit var bookListViewModel: BookListViewModel
+    private lateinit var nowPlayingTextViewModel: NowPlayingTextViewModel
 
+    // service
     var isConnected = false
     lateinit var mediaControlBinder: PlayerService.MediaControlBinder
     val progressHandler = Handler(Looper.getMainLooper()) {
@@ -39,7 +46,7 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookListFragment, Boo
         }
         return@Handler true
     }
-    private val serviceConnection = object: ServiceConnection {
+    private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             isConnected = true
             mediaControlBinder = service as PlayerService.MediaControlBinder
@@ -68,11 +75,10 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookListFragment, Boo
         bookDetailsFragment = BookDetailsFragment()
         bookViewModel = ViewModelProvider(this).get(BookViewModel::class.java)
         bookListViewModel = ViewModelProvider(this).get(BookListViewModel::class.java)
+        nowPlayingTextViewModel = ViewModelProvider(this).get(NowPlayingTextViewModel::class.java)
 
+        // start and bind to service
         bindService(Intent(this, PlayerService::class.java), serviceConnection, BIND_AUTO_CREATE)
-
-        // keep track if book is selected
-        val bookSelected = bookViewModel.getBook().value != null
 
         // determine which fragment(s) should be shown
         if (savedInstanceState == null) { // first load
@@ -83,17 +89,19 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookListFragment, Boo
                 .commit()
         } else {
             if (bookDetailsContainer == null) { // portrait
-                if (bookSelected) {
+                if (bookViewModel.getBook().value != null) {
                     // show detail fragment
                     supportFragmentManager
                         .beginTransaction()
                         .replace(R.id.containerBookList, bookDetailsFragment)
+                        .replace(R.id.containerControls, controlsFragment)
                         .commit()
                 } else {
                     // show list fragment
                     supportFragmentManager
                         .beginTransaction()
                         .replace(R.id.containerBookList, bookListFragment)
+                        .replace(R.id.containerControls, controlsFragment)
                         .commit()
                 }
             } else { // landscape
@@ -101,11 +109,26 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookListFragment, Boo
                 supportFragmentManager
                     .beginTransaction()
                     .replace(R.id.containerBookList, bookListFragment)
+                    .replace(R.id.containerControls, controlsFragment)
                     .commit()
             }
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+
+        if (isConnected && mediaControlBinder.isPlaying && bookDetailsContainer == null && bookViewModel.getBook().value != null) {
+            // show detail fragment
+            supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.containerBookList, bookDetailsFragment)
+                .replace(R.id.containerControls, controlsFragment)
+                .commit()
+        }
+    }
+
+    // called when user performs a search
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
 
@@ -124,7 +147,7 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookListFragment, Boo
         // start playing selected book
         if (isConnected) {
             mediaControlBinder.play(book.id)
-            controlsFragment.updateBook(book)
+            nowPlayingTextViewModel.setText("Now Playing: ${book.title}")
         }
 
         if (bookDetailsContainer == null) { // portrait
@@ -139,6 +162,11 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookListFragment, Boo
     override fun onPlayClicked() {
         if (isConnected && !mediaControlBinder.isPlaying) {
             mediaControlBinder.pause()
+            bookViewModel.getBook().value?.let { book ->
+                if (mediaControlBinder.isPlaying) {
+                    nowPlayingTextViewModel.setText("Now Playing: ${book.title}")
+                }
+            }
         }
     }
 
@@ -146,6 +174,9 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookListFragment, Boo
     override fun onPauseClicked() {
         if (isConnected && mediaControlBinder.isPlaying) {
             mediaControlBinder.pause()
+            bookViewModel.getBook().value?.let { book ->
+                nowPlayingTextViewModel.setText("Paused: ${book.title}")
+            }
         }
     }
 
@@ -153,6 +184,7 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookListFragment, Boo
     override fun onStopClicked() {
         if (isConnected) {
             mediaControlBinder.stop()
+            nowPlayingTextViewModel.setText("")
             controlsFragment.clearBook()
         }
     }
@@ -169,7 +201,10 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookListFragment, Boo
 
         if (bookDetailsContainer == null) { // portrait
             if (bookSelected) {
-                bookViewModel.clearBook()
+                if (!mediaControlBinder.isPlaying) {
+                    bookViewModel.clearBook()
+                }
+
                 supportFragmentManager
                     .beginTransaction()
                     .replace(R.id.containerBookList, bookListFragment)
