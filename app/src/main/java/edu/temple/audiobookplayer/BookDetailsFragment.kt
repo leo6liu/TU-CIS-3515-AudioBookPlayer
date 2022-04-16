@@ -29,11 +29,12 @@ class BookDetailsFragment() : Fragment() {
         val authorView = layout.findViewById<TextView>(R.id.detailAuthor)
         val imageView = layout.findViewById<ImageView>(R.id.detailImage)
 
-        bookViewModel.getBook().observe(requireActivity()) {
-            if (it != null) {
-                titleView.apply { text = it.title }
-                authorView.apply { text = it.author }
-                Picasso.get().load(it.coverURL).into(imageView)
+        bookViewModel.getBook().observe(requireActivity()) { book ->
+            if (book != null) {
+                titleView.apply { text = book.title }
+                authorView.apply { text = book.author }
+                Picasso.get().load(book.coverURL).into(imageView)
+                layout.setOnClickListener { (requireActivity() as BookDetailsFragment).bookSelected(book) }
             } else {
                 titleView.apply { text = "" }
                 authorView.apply { text = "" }
@@ -41,6 +42,12 @@ class BookDetailsFragment() : Fragment() {
             }
         }
 
+
+
         return layout
+    }
+
+    interface BookDetailsFragment {
+        fun bookSelected(book: Book)
     }
 }

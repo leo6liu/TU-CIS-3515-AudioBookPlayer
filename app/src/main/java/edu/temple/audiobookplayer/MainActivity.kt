@@ -20,7 +20,7 @@ import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import java.net.URL
 
-class MainActivity : AppCompatActivity(), BookListFragment.BookListFragment, ControlsFragment.ControlsFragment {
+class MainActivity : AppCompatActivity(), BookListFragment.BookListFragment, BookDetailsFragment.BookDetailsFragment, ControlsFragment.ControlsFragment {
     private var bookDetailsContainer: FragmentContainerView? = null
     private lateinit var bookListFragment: BookListFragment
     private lateinit var bookDetailsFragment: BookDetailsFragment
@@ -32,14 +32,14 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookListFragment, Con
     lateinit var mediaControlBinder: PlayerService.MediaControlBinder
     val progressHandler = Handler(Looper.getMainLooper()) {
         if (isConnected) {
-            it.obj?.let {
-                val progress = (it as PlayerService.BookProgress).progress
+            it.obj?.let { obj ->
+                val progress = (obj as PlayerService.BookProgress).progress
                 controlsFragment.updateProgress(progress)
             }
         }
         return@Handler true
     }
-    val serviceConnection = object: ServiceConnection {
+    private val serviceConnection = object: ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             isConnected = true
             mediaControlBinder = service as PlayerService.MediaControlBinder
@@ -153,6 +153,7 @@ class MainActivity : AppCompatActivity(), BookListFragment.BookListFragment, Con
     override fun onStopClicked() {
         if (isConnected) {
             mediaControlBinder.stop()
+            controlsFragment.clearBook()
         }
     }
 

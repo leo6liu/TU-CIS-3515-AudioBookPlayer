@@ -36,13 +36,19 @@ class ControlsFragment : Fragment() {
             override fun onStopTrackingTouch(p0: SeekBar?) {}
         })
         nowPlaying = layout.findViewById(R.id.nowPlaying)
+        nowPlaying.text = ""
 
         return layout
     }
 
     fun updateBook(book: Book) {
-        nowPlaying.text = book.title
+        nowPlaying.text = "Now Playing: ${book.title}"
         seekBar.max = book.duration
+    }
+
+    fun clearBook() {
+        nowPlaying.text = ""
+        seekBar.progress = 0
     }
 
     fun updateProgress(progress: Int) {
