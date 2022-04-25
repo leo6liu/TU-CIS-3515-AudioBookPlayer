@@ -38,7 +38,7 @@ class ControlsFragment : Fragment() {
 
         // seekbar
         seekBar = layout.findViewById(R.id.seekBar)
-        bookViewModel.getBook().observe(requireActivity()) {
+        bookViewModel.getPlayingBook().observe(requireActivity()) {
             it?.let { seekBar.max = it.duration }
         }
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
