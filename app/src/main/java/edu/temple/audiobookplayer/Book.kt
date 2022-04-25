@@ -2,19 +2,26 @@ package edu.temple.audiobookplayer
 
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import java.io.Serializable
 
+@Entity(tableName = "books")
 data class Book(
-    val title: String,
-    val author: String,
-    val id: Int,
-    val coverURL: String,
-    val duration: Int,
-) : Parcelable {
+    @ColumnInfo(name = "title") val title: String,
+    @ColumnInfo(name = "author") val author: String,
+    @PrimaryKey val id: Int,
+    @ColumnInfo(name = "cover_url") val coverURL: String,
+    @ColumnInfo(name = "duration") val duration: Int,
+    @ColumnInfo(name = "position") val position: Int = 0,
+) : Serializable, Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString().toString(),
         parcel.readString().toString(),
         parcel.readInt(),
         parcel.readString().toString(),
+        parcel.readInt(),
         parcel.readInt(),
     )
 
@@ -24,6 +31,7 @@ data class Book(
         parcel.writeInt(id)
         parcel.writeString(coverURL)
         parcel.writeInt(duration)
+        parcel.writeInt(position)
     }
 
     override fun describeContents(): Int {
