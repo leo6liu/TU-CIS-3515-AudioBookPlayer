@@ -2,10 +2,11 @@ package edu.temple.audiobookplayer
 
 import android.os.Parcel
 import android.os.Parcelable
+import java.io.Serializable
 
 data class BookList(
     var books: ArrayList<Book> = ArrayList(),
-) : Parcelable {
+) : Serializable, Parcelable {
     constructor(parcel: Parcel) : this(
         // this works
         arrayListOf<Book>().apply {
